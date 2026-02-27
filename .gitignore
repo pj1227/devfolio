@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+.nuxt/
+out/
+
+# Environment files — NEVER commit these
+.env
+.env.local
+.env*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# Nx cache
+.nx/cache
+.nx/workspace-data
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json

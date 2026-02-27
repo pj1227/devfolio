@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM"],
+    "paths": {
+      "@devfolio/shared-interfaces": ["libs/shared/interfaces/src/index.ts"],
+      "@devfolio/shared-interfaces/validators": ["libs/shared/interfaces/src/validators.ts"],
+      "@devfolio/shared-models": ["libs/shared/models/src/index.ts"],
+      "@devfolio/resume-react": ["libs/frontend/resume-react/src/index.ts"],
+      "@devfolio/resume-vue": ["libs/frontend/resume-vue/src/index.ts"],
+      "@devfolio/resume-angular": ["libs/frontend/resume-angular/src/index.ts"],
+      "@devfolio/tailwind-preset": ["libs/shared/tailwind/preset.ts"],
+      "@devfolio/tailwind-preset/globals.css": ["libs/shared/tailwind/globals.css"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

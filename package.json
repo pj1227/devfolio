@@ -1,0 +1,21 @@
+{
+  "name": "devfolio",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "nx run-many --target=dev --parallel=4",
+    "build": "nx run-many --target=build",
+    "test": "nx run-many --target=test",
+    "test:ts": "nx run-many --target=test --projects=shared-interfaces,shared-models,resume-react",
+    "test:py": "cd libs/backend/resume-python && pytest && cd ../../../apps/api-python && pytest",
+    "lint": "nx run-many --target=lint",
+    "graph": "nx graph"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.0",
+    "nx": "^20.0.0",
+    "typescript": "^5.6.0",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^2.1.0"
+  }
+}
