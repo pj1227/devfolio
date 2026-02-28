@@ -1,0 +1,171 @@
+/**
+ * @file libs/shared/tailwind/globals.css
+ * @description Global CSS: color custom properties, base resets,
+ * font imports, and reusable component utility classes.
+ *
+ * Import once at the root of each frontend:
+ *   Next.js:  app/globals.css  → @import '@devfolio/tailwind-preset/globals.css'
+ *   Nuxt:     nuxt.config.ts   → css: ['@devfolio/tailwind-preset/globals.css']
+ *   Angular:  styles.css       → @import '@devfolio/tailwind-preset/globals.css'
+ */
+
+/* ── Google Fonts ─────────────────────────────────────────────────────────────
+   Syne (display) + Inter (body) + JetBrains Mono (code).
+   Self-host in production for better performance and privacy.
+   Guide: https://gwfh.mranftl.com/fonts
+──────────────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Color tokens — Dark mode (default) ───────────────────────────────────────
+   Values are space-separated R G B — no # or rgb() wrapper.
+   This format lets Tailwind inject opacity: bg-bg-surface/80
+──────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --color-bg-base:     11  15  25;    /* #0b0f19 — near-black canvas      */
+  --color-bg-surface:  17  24  39;    /* #111827 — cards, panels           */
+  --color-bg-raised:   31  41  55;    /* #1f2937 — hover states            */
+  --color-bg-border:   55  65  81;    /* #374151 — dividers                */
+
+  /* Text */
+  --color-text-primary:    248 250 252;  /* #f8fafc */
+  --color-text-secondary:  203 213 225;  /* #cbd5e1 */
+  --color-text-muted:      148 163 184;  /* #94a3b8 */
+  --color-text-inverted:   15  23  42;   /* #0f172a — text on light bg     */
+
+  /* Accent — amber/gold */
+  --color-accent:      251 191  36;   /* #fbbf24 */
+  --color-accent-dim:  180 132  20;   /* dimmed for hover                  */
+  --color-accent-glow: 251 191  36;   /* used in glow shadow calc          */
+
+  /* Semantic */
+  --color-success: 34  197  94;
+  --color-warning: 234 179   8;
+  --color-error:   239  68  68;
+  --color-info:    59  130 246;
+}
+
+/* ── Color tokens — Light mode override ───────────────────────────────────────
+   Applied when OS is light AND no .dark class is present.
+──────────────────────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --color-bg-base:     248 250 252;
+    --color-bg-surface:  255 255 255;
+    --color-bg-raised:   241 245 249;
+    --color-bg-border:   226 232 240;
+
+    --color-text-primary:    15  23  42;
+    --color-text-secondary:  51  65  85;
+    --color-text-muted:      100 116 139;
+    --color-text-inverted:   248 250 252;
+
+    --color-accent:     202 138   4;   /* amber-600 — darker for light bg  */
+    --color-accent-dim: 161 110   3;
+  }
+}
+
+/* ── Base styles ──────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg-base text-text-primary font-body;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold tracking-tight;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  code, pre, kbd, samp {
+    @apply font-mono;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+/* ── Component utilities ──────────────────────────────────────────────────── */
+@layer components {
+  /* Tech tag — monospaced badge for technology labels */
+  .tech-tag {
+    @apply font-mono text-xs font-medium
+           px-2 py-0.5
+           rounded-tag
+           bg-bg-raised
+           text-accent
+           border border-bg-border;
+  }
+
+  /* Card — standard content card */
+  .card {
+    @apply bg-bg-surface
+           border border-bg-border
+           rounded-card
+           shadow-card
+           p-card
+           transition-shadow duration-200
+           hover:shadow-card-hover;
+  }
+
+  /* Section heading */
+  .section-heading {
+    @apply font-display text-display-lg text-text-primary mb-6;
+  }
+
+  /* Muted label — timestamps, metadata */
+  .muted-label {
+    @apply font-mono text-xs text-text-muted uppercase tracking-wider;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply inline-flex items-center gap-2
+           px-5 py-2.5
+           rounded-tag
+           bg-accent text-text-inverted
+           font-body font-medium text-sm
+           transition-all duration-200
+           hover:bg-accent-dim
+           active:scale-95;
+  }
+
+  /* Ghost/outline button */
+  .btn-ghost {
+    @apply inline-flex items-center gap-2
+           px-5 py-2.5
+           rounded-tag
+           border border-bg-border
+           text-text-secondary
+           font-body font-medium text-sm
+           transition-all duration-200
+           hover:border-accent hover:text-accent
+           active:scale-95;
+  }
+
+  /* Skeleton loading placeholder */
+  .skeleton {
+    @apply bg-bg-raised rounded
+           bg-gradient-to-r from-bg-raised via-bg-border to-bg-raised
+           bg-[length:200%_100%]
+           animate-shimmer;
+  }
+}

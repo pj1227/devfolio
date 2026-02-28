@@ -1,0 +1,12 @@
+{
+  "name": "@devfolio/tailwind-preset",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./preset.ts",
+    "./globals.css": "./globals.css"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}
