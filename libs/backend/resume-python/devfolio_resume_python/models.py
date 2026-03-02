@@ -73,6 +73,7 @@ class TechStackInfo(CamelModel):
     category: str
     related: list[str] = []
     years_experience: float | None = None
+    meta: dict[str, str] = {}
 
 
 class ResumeEnvelope(CamelModel):

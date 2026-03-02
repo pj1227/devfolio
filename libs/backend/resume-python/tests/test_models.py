@@ -90,3 +90,13 @@ def test_resume_envelope_wraps_data():
     env = ResumeEnvelope(data={"key": "value"})
     assert env.data == {"key": "value"}
     assert env.version == "1.0"
+
+
+def test_tech_stack_info_meta_defaults_empty():
+    t = TechStackInfo(name="FastAPI", category="framework")
+    assert t.meta == {}
+
+
+def test_tech_stack_info_accepts_meta():
+    t = TechStackInfo(name="Python", category="runtime", meta={"version": "3.12.3"})
+    assert t.meta["version"] == "3.12.3"
