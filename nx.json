@@ -17,5 +17,17 @@
       "cache": true
     }
   },
-  "plugins": []
+  "sync": {
+    "globalGenerators": ["@nxlv/python:pkg-sync"],
+    "applyChanges": true
+  },
+  "plugins": [
+    {
+      "plugin": "@nxlv/python",
+      "options": {
+        "packageManager": "uv",
+        "inferDependencies": true
+      }
+    }
+  ]
 }
