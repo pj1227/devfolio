@@ -1,0 +1,9 @@
+services:
+  api-python:
+    build:
+      context: .
+      dockerfile: apps/api-python/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
