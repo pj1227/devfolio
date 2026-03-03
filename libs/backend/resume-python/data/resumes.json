@@ -1,0 +1,330 @@
+{
+  "meta": {
+    "resumes": ["fullstack", "dotnet"],
+    "defaultResume": "fullstack"
+  },
+  "base": {
+    "profile": {
+      "name": "Joel M. Cossins",
+      "title": "Software Developer",
+      "clearance": "Active Top Secret Clearance",
+      "phone": "(734) 224-4767",
+      "email": "joel1227@proton.me",
+      "location": "Libby, MT, US",
+      "linkedin": "https://www.linkedin.com/in/joel-cossins-1077384/",
+      "github": "https://github.com/pj1227"
+    },
+    "education": [
+      {
+        "id": "edu-aiu",
+        "institution": "American Intercontinental University",
+        "degree": "B.S. in Information Technology",
+        "field": "AIU Online",
+        "startDate": "2007",
+        "endDate": "2008"
+      },
+      {
+        "id": "edu-caf",
+        "institution": "College of the Air Force",
+        "degree": "AAS",
+        "field": "Electronic Systems Technology",
+        "startDate": "1995",
+        "endDate": "1998"
+      }
+    ],
+    "workExperience": [
+      {
+        "id": "we-independent",
+        "company": "Independent Software Developer",
+        "location": "Libby, MT, US",
+        "roles": [
+          {
+            "id": "role-independent",
+            "title": "Independent Software Developer",
+            "startDate": "2025-08",
+            "endDate": null
+          }
+        ],
+        "highlights": {}
+      },
+      {
+        "id": "we-bigbear",
+        "company": "BigBear.ai",
+        "location": "Ann Arbor, MI, US",
+        "roles": [
+          {
+            "id": "role-bigbear-swd",
+            "title": "Software Developer",
+            "startDate": "2015-06",
+            "endDate": "2025-08"
+          }
+        ],
+        "highlights": {}
+      },
+      {
+        "id": "we-dte",
+        "company": "DTE Energy Trading",
+        "location": "Ann Arbor, MI, US",
+        "roles": [
+          {
+            "id": "role-dte-pa",
+            "title": "Programmer/Analyst",
+            "startDate": "2004-08",
+            "endDate": "2015-06"
+          },
+          {
+            "id": "role-dte-sched",
+            "title": "Scheduler",
+            "startDate": "2004-08",
+            "endDate": "2015-06"
+          }
+        ],
+        "highlights": {
+          "base": {
+            "role-dte-pa": [
+              "Used numerous technologies such as various .NET, C#, VBScript, Java, and others to develop websites, desktop applications, scripts, reporting services, and more.",
+              "Developed logging/reporting pages, gas utilization displays, and reusable services to streamline trading operations.",
+              "Worked directly with the traders to create a logging and reporting page to manage the display of critical information on a storage facility in Canada for trading natural gas along the Eastern seaboard.",
+              "Created a gas utilization page to display market prices, gas pipeline utilization, and weather for specific points in a region. Centralizing this information to one location has been a valuable time-saver for the traders.",
+              "Created a NYMEX natural gas report to display week-over-week, month-over-month, and year-over-year price changes, in addition to historical vs. settle gas futures.",
+              "Created an internal NuGet server to manage .NET package dependencies in all DTE ET's applications, including automatic package restoration. Ensured all dependencies were available and allowed greater control over versioning of dependencies.",
+              "Designed and implemented numerous automations for gas traders and other operational staff resulting in hours of saved time from their day. Automations included web scraping, downloading files from a service, parsing email attachments, and persisting data from these sources to a database."
+            ],
+            "role-dte-sched": [
+              "Coordinated power and gas schedules, optimized pipeline activities, and supported traders with transactional analysis.",
+              "Coordinated the flow of power schedules with counterparties to and within MISO CINHUB and NEPOOL MASSHUB. Volunteered to provide back-up support for PJM scheduling creating more coverage on the scheduling desk.",
+              "Reduced the time it took to coordinate scheduling from 7 hours to 4 hours by improving workflow efficiency. As a result, I took on scheduling Retail power, demand and dec bids for various delivery points within MISO, PJM, and NEPOOL."
+            ]
+          }
+        }
+      },
+      {
+        "id": "we-mci",
+        "company": "MCI WorldCom/UUNet/ANS Communications",
+        "location": "",
+        "roles": [
+          {
+            "id": "role-mci-lan",
+            "title": "LAN/WAN Install Engineer",
+            "startDate": "1998-11",
+            "endDate": "2003-03"
+          }
+        ],
+        "highlights": {
+          "base": {
+            "role-mci-lan": [
+              "Configured and maintained corporate network infrastructure, ensuring reliable internet and DNS services.",
+              "Ensured customer delivery of Internet installations by testing, installing, configuring and troubleshooting network communications hardware and digital circuits in accordance with U.S. and international specifications.",
+              "Configured and administered DNS.",
+              "Designed and implemented a Web-based library of instructional documents for further development and training of fellow engineers."
+            ]
+          }
+        }
+      },
+      {
+        "id": "we-usaf",
+        "company": "USAF",
+        "location": "",
+        "roles": [
+          {
+            "id": "role-usaf",
+            "title": "Communication Computer Systems Control Specialist",
+            "startDate": "1991-11",
+            "endDate": "1998-11"
+          }
+        ],
+        "highlights": {
+          "base": {
+            "role-usaf": [
+              "Ensured reliable data exchange for mission-critical operations by managing, configuring, and maintaining communication networks.",
+              "Enhanced operational readiness by installing servers, patch panels, and building cables to test a network of systems supporting North American Aerospace Defense Command, United States Space Command, and Air Force Space Command.",
+              "Optimized connectivity by configuring and maintaining routers linking Incirlik AB to the USAF NIPRNet.",
+              "Streamlined training processes for 27 personnel at Incirlik AB, ensuring compliance with operational standards.",
+              "Delivered critical command, control, and communications support to the Joint Task Force Southwest Asia, contributing to mission success.",
+              "Restored full network functionality at Shaw AFB by mapping the 9th Air Force Squadron's LAN and replacing faulty terminal connectors and transceivers."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "resumes": {
+    "fullstack": {
+      "profile": {
+        "summary": "Senior Full Stack Software Developer with 10+ years of experience building scalable, data-driven applications across modern web and backend platforms. Extensive professional experience with Angular and C#/.NET services, complemented by recent hands-on development using React and Vue/Nuxt. Strong background in designing internal APIs, client-server architectures, and SQL Server–backed systems in enterprise environments."
+      },
+      "skills": [
+        {
+          "category": "Frontend",
+          "skills": [
+            { "name": "Angular", "note": "professional" },
+            { "name": "React" },
+            { "name": "Vue/Nuxt" },
+            { "name": "TypeScript" },
+            { "name": "JavaScript" },
+            { "name": "HTML" },
+            { "name": "CSS" }
+          ]
+        },
+        {
+          "category": "Backend",
+          "skills": [
+            { "name": "C#" },
+            { "name": ".NET" },
+            { "name": ".NET Core" },
+            { "name": "RESTful APIs & Internal Service Endpoints" },
+            { "name": "WCF", "note": "legacy support" }
+          ]
+        },
+        {
+          "category": "Architecture & Design",
+          "skills": [
+            { "name": "Full Stack Application Architecture" },
+            { "name": "MVC" },
+            { "name": "MVVM" },
+            { "name": "Client-Server Architectures" },
+            { "name": "Component-Based UI Design" }
+          ]
+        },
+        {
+          "category": "Data",
+          "skills": [
+            { "name": "SQL Server" },
+            { "name": "Entity Framework", "note": "ORM" },
+            { "name": "Relational Database Design" },
+            { "name": "Stored Procedures & Functions" }
+          ]
+        },
+        {
+          "category": "Testing & Quality",
+          "skills": [
+            { "name": "Unit Testing" },
+            { "name": "Test-Driven Development (TDD)" },
+            { "name": "Code Reviews" }
+          ]
+        },
+        {
+          "category": "Tools",
+          "skills": [
+            { "name": "Visual Studio" },
+            { "name": "Visual Studio Code" },
+            { "name": "Git" },
+            { "name": "GitHub" },
+            { "name": "Bitbucket" },
+            { "name": "Jira" },
+            { "name": "Confluence" }
+          ]
+        },
+        {
+          "category": "Additional",
+          "skills": [
+            { "name": "AI-Assisted Development Workflows (AIDD)" }
+          ]
+        }
+      ],
+      "highlights": {
+        "role-independent": [
+          "Designed and developed professional full stack applications using Angular, React, and Vue/Nuxt backed by C#/.NET services.",
+          "Built RESTful and internal APIs to support client-server and web-based applications.",
+          "Worked with SQL Server and Entity Framework ORM for data access and persistence.",
+          "Designed and developed a WPF desktop application to demonstrate continued proficiency with .NET UI frameworks.",
+          "Applied AI-assisted development techniques to accelerate design, refactoring, and testing while maintaining code quality.",
+          "Managed source control and documentation using Git and GitHub."
+        ],
+        "role-bigbear-swd": [
+          "Led the design, development, and delivery of complex, customer-specific software modules in a full stack, client-server architecture supporting mission-critical U.S. Army systems.",
+          "Developed rich, data-driven user interfaces using Angular, leveraging components, services, guards, and state management patterns to deliver responsive and maintainable web applications.",
+          "Designed and implemented C#/.NET Core backend services and internal APIs, enabling secure data access and business logic for web-based clients.",
+          "Built and optimized SQL Server-backed data models, including stored procedures, user-defined types, and functions to support reporting and operational workflows.",
+          "Collaborated on the design and deployment of enterprise reporting services using tools such as Telerik Kendo, Syncfusion File Formats, EPPlus, and Dundas, delivering exportable products for senior leadership.",
+          "Worked closely with QA, documentation, and stakeholders to ensure new features were well-tested, well-documented, and aligned with system-wide standards.",
+          "Provided technical leadership and support to onsite project liaisons, assisting with issue resolution, design decisions, and long-term maintainability.",
+          "Previously developed rich client applications using Silverlight (XAML-based UI, MVVM patterns), experience directly applicable to WPF and other .NET UI frameworks."
+        ]
+      }
+    },
+    "dotnet": {
+      "profile": {
+        "summary": "Software Developer with 10+ years of experience building C#/.NET applications in client-server and enterprise environments. Strong background in XAML-based UI development (Silverlight and WPF), MVVM/MVC patterns, internal APIs, and SQL Server using Entity Framework. Recent work includes both desktop and web applications, demonstrating continued hands-on development."
+      },
+      "skills": [
+        {
+          "category": "Languages & Frameworks",
+          "skills": [
+            { "name": "C#" },
+            { "name": ".NET" },
+            { "name": "WPF" },
+            { "name": "XAML" },
+            { "name": "WCF" },
+            { "name": "Angular" },
+            { "name": "React" },
+            { "name": "Vue/Nuxt" }
+          ]
+        },
+        {
+          "category": "Architecture & Design",
+          "skills": [
+            { "name": "MVVM" },
+            { "name": "MVC" },
+            { "name": "Client-Server Architecture" },
+            { "name": "Internal APIs & Service Endpoints" }
+          ]
+        },
+        {
+          "category": "Data",
+          "skills": [
+            { "name": "Entity Framework", "note": "ORM" },
+            { "name": "SQL Server" },
+            { "name": "Relational Database Design" },
+            { "name": "Stored Procedures & Functions" }
+          ]
+        },
+        {
+          "category": "Testing & Quality",
+          "skills": [
+            { "name": "Unit Testing" },
+            { "name": "Test-Driven Development (TDD)" },
+            { "name": "Code Reviews" }
+          ]
+        },
+        {
+          "category": "Tools",
+          "skills": [
+            { "name": "Visual Studio" },
+            { "name": "Visual Studio Code" },
+            { "name": "Git" },
+            { "name": "GitHub" },
+            { "name": "Jira" },
+            { "name": "Confluence" }
+          ]
+        },
+        {
+          "category": "Additional",
+          "skills": [
+            { "name": "AI-Assisted Development Workflows (AIDD)" }
+          ]
+        }
+      ],
+      "highlights": {
+        "role-independent": [
+          "Designed and developed multiple professional applications using C#, .NET, WPF, and modern web frameworks (React, Vue/Nuxt).",
+          "Built a WPF desktop application utilizing XAML, MVVM architecture, and Entity Framework to demonstrate modern WPF development practices.",
+          "Developed and consumed internal APIs and service endpoints in support of client-server applications.",
+          "Worked with SQL Server and Entity Framework ORM for data access and persistence.",
+          "Applied AI-assisted development techniques to accelerate design, refactoring, and testing while maintaining code quality.",
+          "Managed source control and documentation using Git and GitHub."
+        ],
+        "role-bigbear-swd": [
+          "Led the design, development, and implementation of customer-specific modules using Silverlight (XAML-based UI, MVVM patterns directly applicable to WPF, C#, .NET), ensuring compliance with organizational security and coding standards; enabled Army units, training centers, and installations to synchronize mission-critical operations.",
+          "Re-architected and modernized these same modules during the transition to Angular and .NET Core, preserving functional parity while improving scalability, maintainability, and long-term platform viability.",
+          "Used .NET Core to develop server logic to provide internal service APIs to the Angular client and to connect to MS SQL databases.",
+          "Designed and implemented MS SQL user-defined data types, functions, and stored procedures to streamline report generation and data management processes.",
+          "Collaborated on the design and deployment of a reporting service using Telerik Kendo, Syncfusion File Formats, EPPlus, Dundas, and others, enabling the generation of detailed export products for senior leaders and staff.",
+          "Used Angular to develop custom user interfaces for new modules, utilizing components, directives, pipes, guards, and services to optimize client functionality.",
+          "Provided technical support and strategic guidance to the onsite project liaison, effectively resolving issues in collaboration with the team.",
+          "Participated in code reviews and collaborated with QA to ensure reliability and maintainability of mission-critical systems."
+        ]
+      }
+    }
+  }
+}

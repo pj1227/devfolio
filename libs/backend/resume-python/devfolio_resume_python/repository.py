@@ -1,246 +1,294 @@
+"""
+libs/backend/resume-python/src/repository.py
+Repository Protocol (interface) and in-memory SeedRepository.
+
+IResumeRepository is a Protocol — Python's equivalent of a TypeScript
+interface. Any class implementing all these methods satisfies it,
+whether it talks to Postgres, MySQL, or in-memory data.
+
+SeedRepository reads from resumes.json — the single source of truth
+for all resume variant data. Projects stay hardcoded here as they are
+portfolio-specific, not resume-derived.
+"""
+
 from __future__ import annotations
 
+import json
+from functools import lru_cache
+from pathlib import Path
 from typing import Protocol, runtime_checkable
 
-from devfolio_resume_python.models import (
+from .models import (
     Education,
     Profile,
+    ProficiencyLevel,
     Project,
-    SkillCategory,
-    TechStackInfo,
-    WorkExperience,
+    ProjectCategory,
     Skill,
+    SkillCategory,
+    WorkExperience,
 )
+
+# ── JSON loading ──────────────────────────────────────────────────────────────
+
+def _data_path() -> Path:
+    """Resolve path to resumes.json relative to this file."""
+    return Path(__file__).parent.parent / 'data' / 'resumes.json'
+
+
+@lru_cache(maxsize=1)
+def _load_resume_data() -> dict:
+    """Load and cache resumes.json. Called once per process."""
+    path = _data_path()
+    if not path.exists():
+        raise FileNotFoundError(f'resumes.json not found at {path}')
+    with path.open('r', encoding='utf-8') as f:
+        return json.load(f)
+
+
+# ── Proficiency enrichment ────────────────────────────────────────────────────
+
+# Maps skill names (lowercased) to (proficiency, years_of_experience, highlighted)
+# JSON carries category/order; this carries the richer metadata.
+_SKILL_META: dict[str, tuple[ProficiencyLevel, int | None, bool]] = {
+    # Frontend
+    'angular':              (ProficiencyLevel.expert,       10, True),
+    'react':                (ProficiencyLevel.advanced,      3, True),
+    'vue/nuxt':             (ProficiencyLevel.advanced,      2, False),
+    'typescript':           (ProficiencyLevel.expert,        8, True),
+    'javascript':           (ProficiencyLevel.expert,       12, False),
+    'html':                 (ProficiencyLevel.expert,       15, False),
+    'css':                  (ProficiencyLevel.expert,       15, False),
+    # Backend
+    'c#':                   (ProficiencyLevel.expert,       10, True),
+    '.net':                 (ProficiencyLevel.expert,       10, True),
+    '.net core':            (ProficiencyLevel.expert,       10, True),
+    'restful apis & internal service endpoints': (ProficiencyLevel.expert, 10, False),
+    'wcf':                  (ProficiencyLevel.advanced,      6, False),
+    'wpf':                  (ProficiencyLevel.advanced,      4, False),
+    'xaml':                 (ProficiencyLevel.advanced,      4, False),
+    'wcp':                  (ProficiencyLevel.advanced,      4, False),
+    'internal apis & service endpoints': (ProficiencyLevel.expert, 10, False),
+    # Architecture
+    'full stack application architecture': (ProficiencyLevel.expert, 10, False),
+    'mvc':                  (ProficiencyLevel.expert,       10, False),
+    'mvvm':                 (ProficiencyLevel.expert,       10, False),
+    'client-server architectures': (ProficiencyLevel.expert, 10, False),
+    'client-server architecture':  (ProficiencyLevel.expert, 10, False),
+    'component-based ui design':   (ProficiencyLevel.expert,  8, False),
+    # Data
+    'sql server':           (ProficiencyLevel.expert,       10, True),
+    'entity framework':     (ProficiencyLevel.expert,        8, False),
+    'relational database design':  (ProficiencyLevel.expert, 10, False),
+    'stored procedures & functions': (ProficiencyLevel.expert, 10, False),
+    # Testing
+    'unit testing':         (ProficiencyLevel.expert,        8, False),
+    'test-driven development (tdd)': (ProficiencyLevel.advanced, 5, False),
+    'code reviews':         (ProficiencyLevel.expert,        8, False),
+    # Tools
+    'visual studio':        (ProficiencyLevel.expert,       12, False),
+    'visual studio code':   (ProficiencyLevel.expert,        8, False),
+    'git':                  (ProficiencyLevel.expert,       10, False),
+    'github':               (ProficiencyLevel.expert,       10, False),
+    'bitbucket':            (ProficiencyLevel.advanced,      6, False),
+    'jira':                 (ProficiencyLevel.advanced,      8, False),
+    'confluence':           (ProficiencyLevel.advanced,      8, False),
+    # Additional
+    'ai-assisted development workflows (aidd)': (ProficiencyLevel.advanced, 2, True),
+}
+
+
+def _enrich_skill(name: str, note: str | None = None) -> Skill:
+    """Look up proficiency metadata for a skill by name."""
+    key = name.lower()
+    proficiency, years, highlighted = _SKILL_META.get(
+        key, (ProficiencyLevel.intermediate, None, False)
+    )
+    display_name = f'{name} ({note})' if note else name
+    return Skill(
+        name=display_name,
+        proficiency=proficiency,
+        years_of_experience=years,
+        highlighted=highlighted,
+    )
+
+
+# ── Protocol ──────────────────────────────────────────────────────────────────
+
+DEFAULT_RESUME = 'fullstack'
+VALID_RESUMES  = ('fullstack', 'dotnet')
 
 
 @runtime_checkable
 class IResumeRepository(Protocol):
-    def get_profile(self) -> Profile: ...
-    def get_work_experience(self) -> list[WorkExperience]: ...
-    def get_education(self) -> list[Education]: ...
-    def get_skills(self) -> list[SkillCategory]: ...
-    def get_projects(self) -> list[Project]: ...
-    def get_tech_stack(self) -> list[TechStackInfo]: ...
+    async def find_profile(self, resume: str = DEFAULT_RESUME) -> Profile: ...
+    async def find_work_experience(self, resume: str = DEFAULT_RESUME) -> list[WorkExperience]: ...
+    async def find_education(self, resume: str = DEFAULT_RESUME) -> list[Education]: ...
+    async def find_skills(self, resume: str = DEFAULT_RESUME) -> list[SkillCategory]: ...
+    async def find_projects(self, resume: str = DEFAULT_RESUME) -> list[Project]: ...
+    async def get_database_version(self) -> str: ...
+    async def get_database_name(self) -> str: ...
 
+
+# ── SeedRepository ────────────────────────────────────────────────────────────
 
 class SeedRepository:
     """
-    In-memory repository seeded with Joel M. Cossins's real resume data.
-    No database required — the API works immediately with this.
+    In-memory repository backed by resumes.json.
+
+    Resolves the correct resume variant by merging base data with the
+    requested variant's overrides. Falls back to DEFAULT_RESUME if an
+    unknown variant is requested.
     """
 
-    def get_profile(self) -> Profile:
+    def _data(self) -> dict:
+        return _load_resume_data()
+
+    def _variant(self, resume: str) -> dict:
+        data = self._data()
+        if resume not in VALID_RESUMES:
+            resume = DEFAULT_RESUME
+        return data['resumes'][resume]
+
+    # ── Profile ───────────────────────────────────────────────────────────────
+
+    async def find_profile(self, resume: str = DEFAULT_RESUME) -> Profile:
+        base    = self._data()['base']['profile']
+        variant = self._variant(resume).get('profile', {})
+
+        # Variant overrides base for summary and title only
         return Profile(
-            name="Joel M. Cossins",
-            title="Senior Full Stack Software Developer",
-            email="joel1227@proton.me",
-            phone="(734) 224-4767",
-            location="Libby, MT, US",
-            linkedin="https://linkedin.com/in/joelcossins",
-            github="https://github.com/pj1227",
-            summary=(
-                "Senior Full Stack Software Developer with 10+ years of experience "
-                "building scalable, data-driven applications across modern web and backend "
-                "platforms. Active Top Secret clearance. Extensive professional experience "
-                "with Angular and C#/.NET services, complemented by hands-on development "
-                "using React, Vue/Nuxt, and Python. Strong background in designing internal "
-                "APIs, client-server architectures, and SQL Server-backed systems in "
-                "enterprise and mission-critical environments."
-            ),
+            name      = base['name'],
+            title     = base['title'],
+            clearance = base['clearance'],
+            summary   = variant.get('summary', ''),
+            email     = base['email'],
+            location  = base['location'],
+            github    = base['github'],
+            linkedin  = base['linkedin'],
         )
 
-    def get_work_experience(self) -> list[WorkExperience]:
-        return [
-            WorkExperience(
-                company="Independent Software Developer",
-                title="Senior Full Stack Software Developer",
-                start_date="2025-08",
-                end_date=None,
-                location="Libby, MT, US",
-                highlights=[
-                    "Designed and developed professional full stack applications using Angular, React, and Vue/Nuxt backed by C#/.NET services",
-                    "Built RESTful and internal APIs to support client-server and web-based applications",
-                    "Built a WPF desktop application utilizing XAML, MVVM architecture, and Entity Framework to demonstrate modern .NET UI development",
-                    "Worked with SQL Server and Entity Framework ORM for data access and persistence",
-                    "Applied AI-assisted development (AIDD) techniques to accelerate design, refactoring, and testing while maintaining code quality",
-                    "Managed source control and documentation using Git and GitHub",
-                ],
-            ),
-            WorkExperience(
-                company="BigBear.ai",
-                title="Software Developer",
-                start_date="2015-06",
-                end_date="2025-08",
-                location="Ann Arbor, MI, US",
-                highlights=[
-                    "Led design, development, and delivery of complex customer-specific modules in a full stack client-server architecture supporting mission-critical U.S. Army systems",
-                    "Developed rich, data-driven UIs using Angular — components, services, guards, directives, pipes, and state management patterns",
-                    "Re-architected Silverlight/XAML modules to Angular + .NET Core, preserving functional parity while improving scalability and maintainability",
-                    "Designed and implemented C#/.NET Core backend services and internal APIs enabling secure data access and business logic for web clients",
-                    "Built and optimized SQL Server data models including stored procedures, user-defined types, and functions supporting reporting and operational workflows",
-                    "Collaborated on enterprise reporting services using Telerik Kendo, Syncfusion, EPPlus, and Dundas — delivering exportable products for senior leadership",
-                    "Provided technical leadership and strategic guidance to onsite project liaisons; participated in code reviews and collaborated with QA",
-                ],
-            ),
-            WorkExperience(
-                company="DTE Energy Trading",
-                title="Programmer/Analyst",
-                start_date="2004-08",
-                end_date="2015-06",
-                location="Ann Arbor, MI, US",
-                highlights=[
-                    "Developed websites, desktop applications, scripts, and reporting services using .NET, C#, VBScript, and Java",
-                    "Built logging/reporting pages, gas utilization displays, and reusable services to streamline energy trading operations",
-                    "Created a NYMEX natural gas report displaying week-over-week, month-over-month, and year-over-year price changes with historical futures data",
-                    "Designed and implemented an internal NuGet server to manage .NET package dependencies across all DTE ET applications",
-                    "Designed numerous automations for gas traders — web scraping, file downloads, email attachment parsing, and database persistence — saving hours daily",
-                    "Coordinated power and gas schedules across MISO, PJM, and NEPOOL; reduced scheduling coordination time from 7 hours to 4 hours",
-                ],
-            ),
-            WorkExperience(
-                company="MCI WorldCom / UUNet / ANS Communications",
-                title="LAN/WAN Install Engineer",
-                start_date="1998-11",
-                end_date="2003-03",
-                location="US",
-                highlights=[
-                    "Configured and maintained corporate network infrastructure ensuring reliable internet and DNS services",
-                    "Tested, installed, configured, and troubleshot network communications hardware and digital circuits per U.S. and international specifications",
-                    "Designed and implemented a web-based library of instructional documents for engineer training and development",
-                ],
-            ),
-            WorkExperience(
-                company="United States Air Force",
-                title="Communication Computer Systems Control Specialist",
-                start_date="1991-11",
-                end_date="1998-11",
-                location="Various",
-                highlights=[
-                    "Managed, configured, and maintained communication networks for mission-critical operations",
-                    "Installed servers, patch panels, and network systems supporting NORAD, USSPACECOM, and Air Force Space Command",
-                    "Configured and maintained routers linking Incirlik AB to the USAF NIPRNet",
-                    "Delivered C3 support to Joint Task Force Southwest Asia",
-                    "Restored full network functionality at Shaw AFB by mapping the 9th Air Force Squadron's LAN",
-                    "Streamlined training processes for 27 personnel at Incirlik AB ensuring compliance with operational standards",
-                ],
-            ),
-        ]
+    # ── Work Experience ───────────────────────────────────────────────────────
 
-    def get_education(self) -> list[Education]:
+    async def find_work_experience(self, resume: str = DEFAULT_RESUME) -> list[WorkExperience]:
+        base_entries = self._data()['base']['workExperience']
+        highlights   = self._variant(resume).get('highlights', {})
+        base_hl      = self._data()['base']
+
+        result: list[WorkExperience] = []
+
+        for entry in base_entries:
+            company  = entry['company']
+            location = entry['location']
+
+            for role in entry['roles']:
+                role_id    = role['id']
+                role_title = role['title']
+
+                # Resolve highlights: variant override → base highlights → empty
+                if role_id in highlights:
+                    role_highlights = highlights[role_id]
+                else:
+                    # Check base highlights (DTE, MCI, USAF)
+                    base_entry_hl = entry.get('highlights', {}).get('base', {})
+                    role_highlights = base_entry_hl.get(role_id, [])
+
+                result.append(WorkExperience(
+                    id         = role_id,
+                    company    = company,
+                    title      = role_title,
+                    location   = location,
+                    start_date = role['startDate'],
+                    end_date   = role.get('endDate'),
+                    current    = role.get('endDate') is None,
+                    summary    = '',
+                    highlights = role_highlights,
+                    technologies = [],
+                ))
+
+        return result
+
+    # ── Education ─────────────────────────────────────────────────────────────
+
+    async def find_education(self, resume: str = DEFAULT_RESUME) -> list[Education]:
+        """Education is identical across all resume variants."""
+        entries = self._data()['base']['education']
         return [
             Education(
-                institution="American Intercontinental University",
-                degree="Bachelor of Science",
-                field="Information Technology",
-                start_date="2007",
-                end_date="2008",
-            ),
-            Education(
-                institution="College of the Air Force",
-                degree="Associate of Applied Science",
-                field="Electronic Systems Technology",
-                start_date="1995",
-                end_date="1998",
-            ),
+                id          = e['id'],
+                institution = e['institution'],
+                degree      = e['degree'],
+                field       = e['field'],
+                start_date  = e['startDate'],
+                end_date    = e.get('endDate'),
+                current     = e.get('endDate') is None,
+            )
+            for e in entries
         ]
 
-    def get_skills(self) -> list[SkillCategory]:
-        return [
-            SkillCategory(
-                category="Frontend",
-                skills=[
-                    Skill(name="Angular", proficiency="expert"),
-                    Skill(name="React", proficiency="proficient"),
-                    Skill(name="Vue / Nuxt", proficiency="proficient"),
-                    Skill(name="TypeScript", proficiency="expert"),
-                    Skill(name="JavaScript", proficiency="expert"),
-                    Skill(name="HTML / CSS", proficiency="expert"),
-                ],
-            ),
-            SkillCategory(
-                category="Backend",
-                skills=[
-                    Skill(name="C# / .NET / .NET Core", proficiency="expert"),
-                    Skill(name="RESTful APIs", proficiency="expert"),
-                    Skill(name="WCF (legacy)", proficiency="proficient"),
-                    Skill(name="Python / FastAPI", proficiency="proficient"),
-                    Skill(name="Java", proficiency="familiar"),
-                ],
-            ),
-            SkillCategory(
-                category="Desktop & UI Frameworks",
-                skills=[
-                    Skill(name="WPF / XAML", proficiency="proficient"),
-                    Skill(name="Silverlight (MVVM)", proficiency="proficient"),
-                    Skill(name="MVVM / MVC", proficiency="expert"),
-                ],
-            ),
-            SkillCategory(
-                category="Data",
-                skills=[
-                    Skill(name="SQL Server", proficiency="expert"),
-                    Skill(name="Entity Framework (ORM)", proficiency="expert"),
-                    Skill(name="Stored Procedures & Functions", proficiency="expert"),
-                    Skill(name="Relational Database Design", proficiency="expert"),
-                    Skill(name="PostgreSQL", proficiency="familiar"),
-                ],
-            ),
-            SkillCategory(
-                category="Testing & Quality",
-                skills=[
-                    Skill(name="Unit Testing / TDD", proficiency="proficient"),
-                    Skill(name="Code Reviews", proficiency="expert"),
-                    Skill(name="AI-Assisted Development (AIDD)", proficiency="proficient"),
-                ],
-            ),
-            SkillCategory(
-                category="Tools & DevOps",
-                skills=[
-                    Skill(name="Git / GitHub / Bitbucket", proficiency="expert"),
-                    Skill(name="Visual Studio / VS Code", proficiency="expert"),
-                    Skill(name="Docker", proficiency="proficient"),
-                    Skill(name="Jira / Confluence", proficiency="proficient"),
-                    Skill(name="NX Monorepo", proficiency="proficient"),
-                ],
-            ),
-        ]
+    # ── Skills ────────────────────────────────────────────────────────────────
 
-    def get_projects(self) -> list[Project]:
+    async def find_skills(self, resume: str = DEFAULT_RESUME) -> list[SkillCategory]:
+        categories = self._variant(resume).get('skills', [])
+        result: list[SkillCategory] = []
+
+        for cat in categories:
+            skills = [
+                _enrich_skill(s['name'], s.get('note'))
+                for s in cat['skills']
+            ]
+            result.append(SkillCategory(category=cat['category'], skills=skills))
+
+        return result
+
+    # ── Projects ──────────────────────────────────────────────────────────────
+
+    async def find_projects(self, resume: str = DEFAULT_RESUME) -> list[Project]:
+        """Projects are portfolio-specific — not resume-variant-dependent."""
         return [
             Project(
-                name="DevFolio",
-                description=(
-                    "Polyglot portfolio application demonstrating senior-level full stack "
-                    "skills. User-selectable frontend, backend, and database combinations "
-                    "all serving the same resume data via a unified API contract. Built in "
-                    "an NX monorepo with Python/FastAPI, Node.js, React, Vue, and Angular "
-                    "implementations."
+                id='proj-001',
+                name='DevFolio',
+                description='This portfolio — a polyglot full stack architecture demo',
+                summary=(
+                    'A developer portfolio serving the same resume data from multiple '
+                    'frontend frameworks and backend languages. Shared TypeScript '
+                    'interfaces enforce one contract across every implementation.'
                 ),
-                tech_stack=[
-                    "TypeScript", "React", "Vue/Nuxt", "Angular",
-                    "Python", "FastAPI", "C#/.NET", "Node.js",
-                    "PostgreSQL", "SQL Server", "Docker", "NX",
-                ],
-                url="https://github.com/pj1227/devfolio",
+                technologies=['Next.js', 'React', 'TypeScript', 'FastAPI', 'Python', 'PostgreSQL'],
+                github_url='https://github.com/pj1227/devfolio',
+                featured=True,
+                start_date='2025-08',
+                current=True,
                 highlights=[
-                    "NX monorepo managing multiple apps and libs across 3+ languages",
-                    "Shared API contract (OpenAPI) across Python, Node, and .NET backends",
-                    "Live runtime introspection endpoint proving each stack is real and running",
-                    "Single Docker Compose brings up any combination of frontend, backend, and database",
+                    'Shared TypeScript interfaces enforce one contract across 3 frontends and 4 backends',
+                    'Live /api/tech-stack endpoint proves each implementation is real',
+                    'TDD from the start — tests written before implementation',
                 ],
+                category=ProjectCategory.web,
+            ),
+            Project(
+                id='proj-002',
+                name='WPF Weather or Not',
+                description='WPF desktop weather app in C# / .NET',
+                summary='A WPF desktop application demonstrating MVVM patterns with live weather data.',
+                technologies=['C#', '.NET', 'WPF', 'XAML', 'MVVM'],
+                github_url='https://github.com/pj1227/WPF-Weather-or-Not',
+                featured=True,
+                start_date='2025-08',
+                current=False,
+                highlights=[
+                    'MVVM architecture with clean separation of concerns',
+                    'Live weather API integration via C# HttpClient',
+                ],
+                category=ProjectCategory.other,
             ),
         ]
 
-    def get_tech_stack(self) -> list[TechStackInfo]:
-        return [
-            TechStackInfo(name="Angular", category="frontend", related=["TypeScript", "RxJS"], years_experience=8.0),
-            TechStackInfo(name="React", category="frontend", related=["TypeScript", "Vite"], years_experience=3.0),
-            TechStackInfo(name="Vue / Nuxt", category="frontend", related=["TypeScript"], years_experience=2.0),
-            TechStackInfo(name="C# / .NET Core", category="backend", related=["Entity Framework", "WCF"], years_experience=10.0),
-            TechStackInfo(name="FastAPI", category="backend", related=["Python", "Pydantic"], years_experience=1.0),
-            TechStackInfo(name="SQL Server", category="database", related=["Entity Framework", "T-SQL"], years_experience=10.0),
-            TechStackInfo(name="PostgreSQL", category="database", related=["asyncpg"], years_experience=1.0),
-            TechStackInfo(name="WPF / XAML", category="desktop", related=["MVVM", "C#"], years_experience=5.0),
-            TechStackInfo(name="Docker", category="devops", related=["Docker Compose"], years_experience=1.0),
-            TechStackInfo(name="NX", category="tooling", related=["pnpm", "TypeScript"], years_experience=1.0),
-        ]
+    # ── DB introspection (seed mode) ──────────────────────────────────────────
+
+    async def get_database_version(self) -> str:
+        return 'None (seed mode — no database connected)'
+
+    async def get_database_name(self) -> str:
+        return 'None (seed mode)'

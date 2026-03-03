@@ -1,53 +1,88 @@
-from unittest.mock import MagicMock
+import pytest
+from unittest.mock import AsyncMock, MagicMock
 from devfolio_resume_python.service import ResumeService
-from devfolio_resume_python.models import Profile
+from devfolio_resume_python.models import (
+    Profile, WorkExperience, Education, SkillCategory, Project,
+)
 
 
-def test_service_delegates_get_profile(service: ResumeService):
-    profile = service.get_profile()
+@pytest.mark.asyncio
+async def test_service_delegates_get_profile(service: ResumeService):
+    profile = await service.get_profile()
     assert isinstance(profile, Profile)
     assert profile.name == "Joel M. Cossins"
 
 
-def test_service_delegates_get_work_experience(service: ResumeService):
-    work = service.get_work_experience()
+@pytest.mark.asyncio
+async def test_service_get_profile_variant(service: ResumeService):
+    fs = await service.get_profile(resume="fullstack")
+    dn = await service.get_profile(resume="dotnet")
+    assert fs.summary != dn.summary
+
+
+@pytest.mark.asyncio
+async def test_service_delegates_get_work_experience(service: ResumeService):
+    work = await service.get_work_experience()
+    assert isinstance(work, list)
     assert len(work) >= 1
 
 
-def test_service_delegates_get_education(service: ResumeService):
-    edu = service.get_education()
+@pytest.mark.asyncio
+async def test_service_delegates_get_education(service: ResumeService):
+    edu = await service.get_education()
+    assert isinstance(edu, list)
     assert len(edu) >= 1
 
 
-def test_service_delegates_get_skills(service: ResumeService):
-    skills = service.get_skills()
+@pytest.mark.asyncio
+async def test_service_delegates_get_skills(service: ResumeService):
+    skills = await service.get_skills()
+    assert isinstance(skills, list)
     assert len(skills) >= 1
 
 
-def test_service_delegates_get_projects(service: ResumeService):
-    projects = service.get_projects()
+@pytest.mark.asyncio
+async def test_service_delegates_get_projects(service: ResumeService):
+    projects = await service.get_projects()
+    assert isinstance(projects, list)
     assert len(projects) >= 1
 
 
-def test_service_delegates_get_tech_stack(service: ResumeService):
-    tech = service.get_tech_stack()
-    assert len(tech) >= 1
+@pytest.mark.asyncio
+async def test_service_delegates_get_tech_stack(service: ResumeService):
+    tech = await service.get_tech_stack()
+    assert tech.runtime.name == "Python"
+    assert tech.framework.name == "FastAPI"
 
 
-def test_service_uses_injected_repository():
-    """Service calls the repo — not hardcoded data."""
+@pytest.mark.asyncio
+async def test_service_uses_injected_repository():
+    """Service delegates to repo — not hardcoded data."""
     mock_repo = MagicMock()
-    mock_repo.get_profile.return_value = Profile(
+    mock_repo.find_profile = AsyncMock(return_value=Profile(
         name="Test User",
         title="Engineer",
+        summary="Test summary.",
         email="t@t.com",
-        phone="555",
         location="US",
-        linkedin="https://linkedin.com",
-        github="https://github.com",
-        summary="Test",
-    )
+    ))
     svc = ResumeService(mock_repo)
-    result = svc.get_profile()
-    mock_repo.get_profile.assert_called_once()
+    result = await svc.get_profile()
+    mock_repo.find_profile.assert_called_once()
     assert result.name == "Test User"
+
+
+@pytest.mark.asyncio
+async def test_service_passes_resume_param_to_repo():
+    """Service forwards the resume variant param to the repo."""
+    mock_repo = MagicMock()
+    mock_repo.find_profile = AsyncMock(return_value=Profile(
+        name="Test User",
+        title="Engineer",
+        summary="Test summary.",
+        email="t@t.com",
+        location="US",
+    ))
+    svc = ResumeService(mock_repo)
+    await svc.get_profile(resume="dotnet")
+    mock_repo.find_profile.assert_called_once_with("dotnet")
