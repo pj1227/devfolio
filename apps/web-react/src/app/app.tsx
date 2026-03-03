@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './app.module.css';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8000';
 
 type Tab = 'experience' | 'education' | 'skills' | 'projects' | 'tech-stack';
 
