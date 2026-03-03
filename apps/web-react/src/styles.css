@@ -1,1 +1,54 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg-base: #0f1117;
+  --bg-surface: #161b27;
+  --bg-card: #1e2436;
+  --bg-card-hover: #242940;
+  --accent-green: #a3e635;
+  --accent-cyan: #22d3ee;
+  --accent-green-dim: rgba(163, 230, 53, 0.15);
+  --accent-cyan-dim: rgba(34, 211, 238, 0.15);
+  --text-primary: #f1f5f9;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+  --border: #1e2d3d;
+  --border-bright: #2e3f52;
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Hex background pattern */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='92' viewBox='0 0 80 92'%3E%3Cpath d='M40 4L76 24V64L40 84L4 64V24Z' fill='none' stroke='%23ffffff08' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 80px 92px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
