@@ -6,7 +6,7 @@ from devfolio_resume_python.models import Profile
 def test_service_delegates_get_profile(service: ResumeService):
     profile = service.get_profile()
     assert isinstance(profile, Profile)
-    assert profile.name == "Joel Patterson"
+    assert profile.name == "Joel M. Cossins"
 
 
 def test_service_delegates_get_work_experience(service: ResumeService):

@@ -12,7 +12,7 @@ def test_seed_repository_satisfies_protocol():
 def test_get_profile_returns_profile(repo: SeedRepository):
     profile = repo.get_profile()
     assert isinstance(profile, Profile)
-    assert profile.name == "Joel Patterson"
+    assert profile.name == "Joel M. Cossins"
 
 
 def test_get_work_experience_returns_list(repo: SeedRepository):
@@ -39,7 +39,7 @@ def test_get_skills_returns_categories(repo: SeedRepository):
     assert isinstance(skills, list)
     assert all(isinstance(s, SkillCategory) for s in skills)
     categories = [s.category for s in skills]
-    assert "Languages" in categories
+    assert "Frontend" in categories
 
 
 def test_get_projects_returns_list(repo: SeedRepository):

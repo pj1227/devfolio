@@ -68,7 +68,7 @@
         "{workspaceRoot}/coverage/{projectRoot}"
       ],
       "options": {
-        "command": "uv run pytest tests/",
+        "command": "/home/pj/.local/bin/uv run pytest tests/",
         "cwd": "{projectRoot}"
       },
       "cache": true

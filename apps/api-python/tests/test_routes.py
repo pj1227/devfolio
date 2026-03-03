@@ -6,7 +6,7 @@ async def test_get_profile(client):
     assert response.status_code == 200
     body = response.json()
     assert "data" in body
-    assert body["data"]["name"] == "Joel Patterson"
+    assert body["data"]["name"] == "Joel M. Cossins"
 
 
 async def test_get_work_experience(client):
@@ -30,7 +30,7 @@ async def test_get_skills(client):
     body = response.json()
     assert isinstance(body["data"], list)
     categories = [s["category"] for s in body["data"]]
-    assert "Languages" in categories
+    assert "Frontend" in categories
 
 
 async def test_get_projects(client):
