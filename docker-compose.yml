@@ -7,3 +7,14 @@ services:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
+
+  web-react:
+    build:
+      context: .
+      dockerfile: apps/web-react/Dockerfile
+      args:
+        VITE_API_BASE: http://localhost:8000
+    ports:
+      - "4200:80"
+    depends_on:
+      - api-python
