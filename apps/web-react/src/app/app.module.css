@@ -455,3 +455,72 @@
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
 }
+
+/* ── Clearance Badge ── */
+.clearanceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── Resume Selector ── */
+.resumeSelector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 2.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+.resumeSelectorLabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.resumeSegment {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.resumeSegmentBtn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border);
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  letter-spacing: 0.03em;
+}
+
+.resumeSegmentBtn:last-child {
+  border-right: none;
+}
+
+.resumeSegmentBtn:hover {
+  color: var(--text-dim);
+  background: var(--bg-card);
+}
+
+.resumeSegmentActive {
+  color: var(--accent-green) !important;
+  background: var(--accent-green-dim) !important;
+}
