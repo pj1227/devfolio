@@ -172,6 +172,11 @@ class TechStackInfo(CamelModel):
 
 # ── API response envelope ─────────────────────────────────────────────────────
 
+class ApiEnvelope(CamelModel):
+    """Lightweight response wrapper — just data + version. Used by all routes."""
+    data: object
+    version: str = "1.0"
+
 class StackIdentifier(CamelModel):
     frontend: Optional[str] = None
     backend:  str

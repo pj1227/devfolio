@@ -6,7 +6,7 @@ from devfolio_resume_python.models import (
     SkillCategory,
     Project,
     TechStackInfo,
-    ApiResponse,
+    ApiResponse, ApiEnvelope,
 )
 from devfolio_resume_python.repository import IResumeRepository, SeedRepository
 from devfolio_resume_python.service import ResumeService
@@ -19,7 +19,7 @@ __all__ = [
     "SkillCategory",
     "Project",
     "TechStackInfo",
-    "ApiResponse",
+    "ApiResponse, ApiEnvelope",
     "IResumeRepository",
     "SeedRepository",
     "ResumeService",

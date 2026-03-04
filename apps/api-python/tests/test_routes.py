@@ -44,7 +44,7 @@ async def test_get_tech_stack(client):
     response = await client.get("/tech-stack")
     assert response.status_code == 200
     body = response.json()
-    assert isinstance(body["data"], list)
+    assert isinstance(body["data"], dict)
 
 
 async def test_envelope_has_version(client):
