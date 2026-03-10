@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
-
+      - DATABASE_URL=${DATABASE_URL}
   web-react:
     build:
       context: .
