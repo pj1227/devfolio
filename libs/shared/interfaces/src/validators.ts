@@ -15,7 +15,6 @@
 import type {
   Profile,
   WorkExperience,
-  TechStackInfo,
 } from './domain';
 
 import type { TechStackInfo as TechStack } from './tech-stack';
