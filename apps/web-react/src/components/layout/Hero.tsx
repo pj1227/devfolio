@@ -9,7 +9,7 @@ export function Hero({ profile }: HeroProps) {
   return (
     <section className={styles.hero}>
       <div className={styles.heroInner}>
-        <div className={styles.heroLabel}>// portfolio.dev</div>
+        <div className={styles.heroLabel}>// joelcossins.dev</div>
         <h1 className={styles.heroName}>{profile.name}</h1>
         <div className={styles.heroTitle}>{'{ '}{profile.title}{' }'}</div>
         {profile.clearance && (
