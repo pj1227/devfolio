@@ -18,6 +18,7 @@ export type ProficiencyLevel =
 export interface Profile {
   name: string;
   title: string;
+  clearance?: string;
   summary: string;
   email: string;       // server-side only — never returned by the API
   location: string;
