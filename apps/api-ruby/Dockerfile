@@ -60,4 +60,4 @@ WORKDIR /app/apps/api-ruby
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "echo 'PORT is:' $PORT && bundle exec rails server -b 0.0.0.0 -p ${PORT:-3000}"]
+CMD ["sh", "-c", "bundle exec rails server -b 0.0.0.0 -p ${PORT:-8080}"]
