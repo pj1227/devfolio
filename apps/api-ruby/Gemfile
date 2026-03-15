@@ -1,0 +1,33 @@
+source "https://rubygems.org"
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+
+ruby "3.3.7"
+
+# Core
+gem "rails", "~> 8.1.2"
+gem "pg", "~> 1.5"
+gem "puma", ">= 5.0"
+
+# CORS
+gem "rack-cors"
+
+# JSON serialization
+gem "blueprinter"
+
+# Environment variables
+gem "dotenv-rails", groups: [:development, :test]
+
+group :development, :test do
+  gem "rspec-rails", "~> 7.0"
+  gem "factory_bot_rails"
+  gem "shoulda-matchers", "~> 6.0"
+  gem "faker"
+end
+
+group :development do
+  gem "rubocop-rails-omakase", require: false
+end
+gem "bootsnap", "~> 1.23"
+
+# Local lib
+gem "devfolio_resume_ruby", path: "../../libs/backend/resume-ruby"
