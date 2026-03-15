@@ -66,9 +66,16 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    allowed_origins = [
+    'https://joelcossins.dev',
+    'https://www.joelcossins.dev',
+    'http://localhost:4200',  # local dev
+    'http://localhost:3000',  # future Next.js dev
+    ]
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=['*'],
+        allow_origins=allowed_origins,
         allow_methods=['GET'],
         allow_headers=['*'],
     )

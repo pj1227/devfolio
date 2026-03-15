@@ -19,6 +19,18 @@ __pycache__/
 *.pyo
 .venv/
 *.egg-info/
+*.pyd
+
+# Ruby / Rails
+/apps/api-ruby/config/master.key
+/apps/api-ruby/config/credentials/*.key
+/apps/api-ruby/.env
+/apps/api-ruby/log/
+/apps/api-ruby/tmp/
+/apps/api-ruby/storage/
+/apps/api-ruby/.bundle/
+/apps/api-ruby/vendor/bundle/
+*.gem
 
 # Nx cache
 .nx/cache
