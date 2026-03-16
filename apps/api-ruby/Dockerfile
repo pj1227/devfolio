@@ -58,6 +58,6 @@ COPY --chown=rails:rails --from=build /app /app
 
 WORKDIR /app/apps/api-ruby
 
-EXPOSE 3000
+EXPOSE 8000
 
-CMD ["sh", "-c", "bundle exec rails server -b 0.0.0.0 -p ${PORT:-8080}"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "8000"]
