@@ -70,6 +70,7 @@ def create_app() -> FastAPI:
     'https://joelcossins.dev',
     'https://www.joelcossins.dev',
     'http://localhost:4200',  # local dev
+    'http://localhost:4201',  # local dev (Nx serve when 4200 is occupied)
     'http://localhost:3000',  # future Next.js dev
     ]
 
