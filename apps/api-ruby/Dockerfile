@@ -34,6 +34,7 @@ RUN apt-get update -qq && \
 COPY libs/backend/resume-ruby /app/libs/backend/resume-ruby
 
 # Copy the app
+# bust: 2026-03-15-v2
 COPY apps/api-ruby /app/apps/api-ruby
 
 WORKDIR /app/apps/api-ruby
