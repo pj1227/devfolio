@@ -49,4 +49,4 @@ reports/
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
 
-*.Zone.Identifier
+*.Zone.Identifier*.Zone.Identifier
