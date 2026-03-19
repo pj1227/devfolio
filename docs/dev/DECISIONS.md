@@ -189,3 +189,30 @@ Early in development, `aws-0-us-east-1` was used and caused `Tenant or user not 
 ```
 postgresql://postgres.<project-ref>:<password>@aws-0-us-west-2.pooler.supabase.com:5432/postgres
 ```
+---
+
+## ADR-009 — Railway Port Configuration for Rails
+
+**Date:** 2026-03  
+**Status:** Accepted
+
+### Context
+Railway routes external traffic to a specific port based on the `PORT` environment
+variable set in the service variables — it does not inject PORT into the container.
+The app must explicitly bind to the same port that Railway expects.
+
+### Decision
+Set `PORT = 8000` in Railway Variables for all services. All services bind to 8000.
+
+### Gotchas Encountered
+- `railway.json` startCommand takes highest priority over Dockerfile CMD and puma.rb
+- If startCommand has a hardcoded port it overrides everything else
+- Railway's build cache can prevent updated files from being picked up — add a comment
+  to the Dockerfile to bust the cache when needed
+- Railway reads the PORT variable to configure its proxy, it does not inject it into
+  the container environment
+```
+
+While DNS propagates, check progress at:
+```
+https://dnschecker.org/#CNAME/api-rails.joelcossins.dev
