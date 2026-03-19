@@ -1,0 +1,93 @@
+/* Header.module.css */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  background: var(--color-surface, rgba(10, 10, 15, 0.85));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 52px;
+}
+
+/* Brand */
+.brand {
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brandName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary, #e5e7eb);
+}
+
+/* Stack pill */
+.stackPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-accent, #3b82f6);
+  background: var(--color-accent-subtle, rgba(59, 130, 246, 0.1));
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-accent-light, #93c5fd);
+  white-space: nowrap;
+}
+
+.stackPillSegment {
+  /* intentionally inherits */
+}
+
+.stackPillDivider {
+  opacity: 0.5;
+  font-size: 0.65rem;
+}
+
+/* Spacer pushes nav to the right */
+.inner > *:nth-child(2) {
+  margin-right: auto;
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.navLink {
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #9ca3af);
+  text-decoration: none;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.navLink:hover {
+  background: var(--color-surface-hover, rgba(255, 255, 255, 0.06));
+  color: var(--color-text-primary, #e5e7eb);
+}
+
+@media (max-width: 480px) {
+  .stackPill {
+    display: none;
+  }
+}

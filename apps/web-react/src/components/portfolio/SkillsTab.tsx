@@ -1,12 +1,22 @@
 import type { SkillCategory } from '@devfolio/shared-interfaces';
-import type { Resume } from '../../hooks/useResumeApi';
+import type { Resume } from '../../components/resume/ResumeSelector';
 import { useResumeApi } from '../../hooks/useResumeApi';
 import styles from '../../app/app.module.css';
 
-export function SkillsTab({ resume }: { resume: Resume }) {
-  const { data, loading, error } = useResumeApi<SkillCategory[]>('/skills', resume);
-  if (loading) return <div className={styles.loading}>fetching skills...</div>;
-  if (error) return <div className={styles.error}>Error: {error}</div>;
+interface SkillsTabProps {
+  resume: Resume;
+  apiBaseUrl: string;
+}
+
+export function SkillsTab({ apiBaseUrl }: SkillsTabProps) {
+  const { data, status, error } = useResumeApi<SkillCategory[]>({
+    apiBaseUrl,
+    path: '/skills',
+  });
+
+  if (status === 'loading') return <div className={styles.loading}>fetching skills...</div>;
+  if (status === 'error' || status === 'unavailable') return <div className={styles.error}>Error: {error}</div>;
+
   return (
     <div>
       <p className={styles.sectionHeading}>Skills</p>

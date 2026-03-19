@@ -1,12 +1,22 @@
 import type { Education } from '@devfolio/shared-interfaces';
-import type { Resume } from '../../hooks/useResumeApi';
+import type { Resume } from '../../components/resume/ResumeSelector';
 import { useResumeApi } from '../../hooks/useResumeApi';
 import styles from '../../app/app.module.css';
 
-export function EducationTab({ resume }: { resume: Resume }) {
-  const { data, loading, error } = useResumeApi<Education[]>('/education', resume);
-  if (loading) return <div className={styles.loading}>fetching education...</div>;
-  if (error) return <div className={styles.error}>Error: {error}</div>;
+interface EducationTabProps {
+  resume: Resume;
+  apiBaseUrl: string;
+}
+
+export function EducationTab({ apiBaseUrl }: EducationTabProps) {
+  const { data, status, error } = useResumeApi<Education[]>({
+    apiBaseUrl,
+    path: '/education',
+  });
+
+  if (status === 'loading') return <div className={styles.loading}>fetching education...</div>;
+  if (status === 'error' || status === 'unavailable') return <div className={styles.error}>Error: {error}</div>;
+
   return (
     <div>
       <p className={styles.sectionHeading}>Education</p>

@@ -1,12 +1,22 @@
 import type { Project } from '@devfolio/shared-interfaces';
-import type { Resume } from '../../hooks/useResumeApi';
+import type { Resume } from '../../components/resume/ResumeSelector';
 import { useResumeApi } from '../../hooks/useResumeApi';
 import styles from '../../app/app.module.css';
 
-export function ProjectsTab({ resume }: { resume: Resume }) {
-  const { data, loading, error } = useResumeApi<Project[]>('/projects', resume);
-  if (loading) return <div className={styles.loading}>fetching projects...</div>;
-  if (error) return <div className={styles.error}>Error: {error}</div>;
+interface ProjectsTabProps {
+  resume: Resume;
+  apiBaseUrl: string;
+}
+
+export function ProjectsTab({ apiBaseUrl }: ProjectsTabProps) {
+  const { data, status, error } = useResumeApi<Project[]>({
+    apiBaseUrl,
+    path: '/projects',
+  });
+
+  if (status === 'loading') return <div className={styles.loading}>fetching projects...</div>;
+  if (status === 'error' || status === 'unavailable') return <div className={styles.error}>Error: {error}</div>;
+
   return (
     <div>
       <p className={styles.sectionHeading}>Projects</p>

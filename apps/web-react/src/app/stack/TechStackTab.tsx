@@ -2,11 +2,20 @@ import type { TechStackInfo } from '@devfolio/shared-interfaces';
 import { useResumeApi } from '../../hooks/useResumeApi';
 import styles from '../app.module.css';
 
-export function TechStackTab() {
-  const { data, loading, error } = useResumeApi<TechStackInfo>('/tech-stack');
-  if (loading) return <div className={styles.loading}>fetching live runtime data...</div>;
-  if (error) return <div className={styles.error}>Error: {error}</div>;
+interface TechStackTabProps {
+  apiBaseUrl: string;
+}
+
+export function TechStackTab({ apiBaseUrl }: TechStackTabProps) {
+  const { data, status, error } = useResumeApi<TechStackInfo>({
+    apiBaseUrl,
+    path: '/tech-stack',
+  });
+
+  if (status === 'loading') return <div className={styles.loading}>fetching live runtime data...</div>;
+  if (status === 'error' || status === 'unavailable') return <div className={styles.error}>Error: {error}</div>;
   if (!data) return null;
+
   return (
     <div>
       <p className={styles.sectionHeading}>Live Runtime Environment</p>

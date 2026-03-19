@@ -24,7 +24,8 @@
       "@devfolio/tailwind-preset/globals.css": [
         "libs/shared/tailwind/globals.css"
       ],
-      "@devfolio/shared-hooks": ["libs/frontend/shared-hooks/src/index.ts"]
+      "@devfolio/shared-hooks": ["libs/frontend/shared-hooks/src/index.ts"],
+      "@devfolio/shared-ui": ["libs/frontend/shared-ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "dist"]

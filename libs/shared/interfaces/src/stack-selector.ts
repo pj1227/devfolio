@@ -1,31 +1,70 @@
 /**
- * @file stack-selector.ts
- * @description Types that drive the /stack page UI.
- *
- * StackOption<T> represents one tile in the picker.
- * `available: false` renders as "Coming Soon — Phase N".
- * `available: true` means the tile is clickable and wired to a real service.
- *
- * Adding a new stack = add a StackOption entry in shared/models/src/index.ts
- * and flip available to true when the phase is complete.
+ * Stack selector shared TypeScript interfaces.
+ * Used by @devfolio/shared-ui, @devfolio/shared-hooks, and all frontend apps.
  */
 
-export type FrontendStack = 'next' | 'nuxt' | 'angular';
-export type BackendStack  = 'fastapi' | 'laravel' | 'rails' | 'aspnet';
-export type DatabaseStack = 'postgres' | 'mysql' | 'mssql' | 'mongodb';
+// ─── Segment identifiers ─────────────────────────────────────────────────────
 
-export interface StackOption<T extends string> {
-  value: T;
-  label: string;        // "Next.js", "FastAPI", "PostgreSQL"
-  version: string;      // "15.x", "0.115.x", "17.x"
-  language: string;     // "TypeScript", "Python", "SQL"
-  phase: number;        // which phase unlocks this option
-  available: boolean;
-  apiBaseUrl?: string;  // only set when available === true
+export type FrontendKey = 'react' | 'next' | 'angular' | 'vue' | 'remix' | 'astro' | 'svelte';
+export type BackendKey = 'fastapi' | 'rails' | 'django' | 'flask' | 'laravel' | 'aspnet' | 'express';
+export type QueryKey = 'rest' | 'graphql';
+export type DatabaseKey = 'postgres' | 'mysql' | 'sqlite' | 'mssql' | 'mongodb' | 'redis';
+
+// ─── Availability ─────────────────────────────────────────────────────────────
+
+export type AvailabilityStatus = 'available' | 'coming-soon';
+
+export interface PhaseInfo {
+  /** e.g. "Ph3", "Ph4" */
+  badge: string;
+  /** e.g. 3 */
+  number: number;
 }
+
+// ─── Option shape ─────────────────────────────────────────────────────────────
+
+export interface StackOption<K extends string = string> {
+  key: K;
+  label: string;
+  /** Short label for tight spaces (e.g. segment button) */
+  shortLabel?: string;
+  status: AvailabilityStatus;
+  /** Only set when status === 'coming-soon' */
+  phase?: PhaseInfo;
+  /** API base URL — only set when status === 'available' */
+  apiBaseUrl?: string;
+  /** Icon identifier (maps to icon registry in shared-ui) */
+  icon?: string;
+}
+
+// ─── Full selector state ──────────────────────────────────────────────────────
 
 export interface StackSelection {
-  frontend: FrontendStack;
-  backend: BackendStack;
-  database: DatabaseStack;
+  frontend: FrontendKey;
+  backend: BackendKey;
+  query: QueryKey;
+  database: DatabaseKey;
 }
+
+export interface StackSelectorState {
+  selection: StackSelection;
+  /** Derived from selected backend option */
+  apiBaseUrl: string;
+}
+
+// ─── Segment config passed to the UI ─────────────────────────────────────────
+
+export interface StackSegment<K extends string = string> {
+  id: keyof StackSelection;
+  label: string;
+  options: StackOption<K>[];
+}
+
+// ─── URL param keys ───────────────────────────────────────────────────────────
+
+export const STACK_PARAM_KEYS = {
+  frontend: 'frontend',
+  backend: 'backend',
+  query: 'query',
+  database: 'database',
+} as const satisfies Record<keyof StackSelection, string>;

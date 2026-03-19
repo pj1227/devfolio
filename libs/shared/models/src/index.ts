@@ -17,10 +17,6 @@ import type {
   Education,
   SkillCategory,
   Project,
-  StackOption,
-  FrontendStack,
-  BackendStack,
-  DatabaseStack,
 } from '@devfolio/shared-interfaces';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -328,30 +324,14 @@ export const PROJECTS_SEED: Project[] = [
 // STACK SELECTOR OPTIONS
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const FRONTEND_STACK_OPTIONS: StackOption<FrontendStack>[] = [
-  {
-    value: 'next', label: 'Next.js', version: '15.x',
-    language: 'TypeScript', phase: 1, available: true,
-    apiBaseUrl: process.env['NEXT_PUBLIC_GATEWAY_URL'] ?? 'http://localhost:3001',
-  },
-  { value: 'nuxt', label: 'Nuxt', version: '3.x', language: 'TypeScript', phase: 2, available: false },
-  { value: 'angular', label: 'Angular', version: '19.x', language: 'TypeScript', phase: 3, available: false },
-];
-
-export const BACKEND_STACK_OPTIONS: StackOption<BackendStack>[] = [
-  {
-    value: 'fastapi', label: 'FastAPI', version: '0.115.x',
-    language: 'Python', phase: 1, available: true,
-    apiBaseUrl: process.env['NEXT_PUBLIC_GATEWAY_URL'] ?? 'http://localhost:3001',
-  },
-  { value: 'laravel', label: 'Laravel', version: '11.x', language: 'PHP', phase: 2, available: false },
-  { value: 'rails', label: 'Ruby on Rails', version: '8.x', language: 'Ruby', phase: 3, available: false },
-  { value: 'aspnet', label: 'ASP.NET Core', version: '9.x', language: 'C#', phase: 4, available: false },
-];
-
-export const DATABASE_STACK_OPTIONS: StackOption<DatabaseStack>[] = [
-  { value: 'postgres', label: 'PostgreSQL', version: '17.x', language: 'SQL', phase: 1, available: true },
-  { value: 'mysql', label: 'MySQL', version: '8.x', language: 'SQL', phase: 2, available: false },
-  { value: 'mssql', label: 'SQL Server', version: '2022', language: 'T-SQL', phase: 3, available: false },
-  { value: 'mongodb', label: 'MongoDB', version: '8.x', language: 'MQL', phase: 4, available: false },
-];
+// ─── Phase 2: Stack Selector data ────────────────────────────────────────────
+export {
+  FRONTEND_OPTIONS,
+  BACKEND_OPTIONS,
+  QUERY_OPTIONS,
+  DATABASE_OPTIONS,
+  STACK_SEGMENTS,
+  DEFAULT_STACK_SELECTION,
+  getBackendOption,
+  getApiBaseUrl,
+} from './stack-options';

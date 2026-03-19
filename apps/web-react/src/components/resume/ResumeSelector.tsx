@@ -1,5 +1,6 @@
-import type { Resume } from '../../hooks/useResumeApi';
 import styles from '../../app/app.module.css';
+
+export type Resume = 'fullstack' | 'dotnet';
 
 const RESUME_VARIANTS: { id: Resume; label: string }[] = [
   { id: 'fullstack', label: 'Full Stack' },

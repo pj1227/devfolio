@@ -1,0 +1,129 @@
+/* ApiStatusBanner.module.css */
+
+/* ─── Skeleton ───────────────────────────────────────────────────────────────── */
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px 0;
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeletonLine,
+.skeletonBlock {
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-skeleton-base, rgba(255,255,255,0.06)) 25%,
+    var(--color-skeleton-shine, rgba(255,255,255,0.12)) 50%,
+    var(--color-skeleton-base, rgba(255,255,255,0.06)) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.skeletonLine {
+  height: 14px;
+}
+
+.skeletonBlock {
+  height: 80px;
+  width: 100%;
+  margin: 6px 0;
+}
+
+/* ─── Retrying indicator ─────────────────────────────────────────────────────── */
+
+.retrying {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 0;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #9ca3af);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-accent, #3b82f6);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ─── Banners ─────────────────────────────────────────────────────────────────── */
+
+.banner {
+  display: flex;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid;
+  margin: 16px 0;
+}
+
+.bannerUnavailable {
+  border-color: var(--color-warning-border, rgba(251, 191, 36, 0.3));
+  background: var(--color-warning-bg, rgba(251, 191, 36, 0.06));
+}
+
+.bannerError {
+  border-color: var(--color-error-border, rgba(239, 68, 68, 0.3));
+  background: var(--color-error-bg, rgba(239, 68, 68, 0.06));
+}
+
+.bannerIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  padding-top: 1px;
+  color: var(--color-text-secondary, #9ca3af);
+}
+
+.bannerBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bannerTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #e5e7eb);
+}
+
+.bannerMessage {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #9ca3af);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.retryButton {
+  margin-top: 8px;
+  align-self: flex-start;
+  padding: 5px 14px;
+  border-radius: 5px;
+  border: 1px solid var(--color-border, rgba(255,255,255,0.12));
+  background: var(--color-surface-hover, rgba(255,255,255,0.06));
+  color: var(--color-text-primary, #e5e7eb);
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.retryButton:hover {
+  background: var(--color-surface-active, rgba(255,255,255,0.1));
+}

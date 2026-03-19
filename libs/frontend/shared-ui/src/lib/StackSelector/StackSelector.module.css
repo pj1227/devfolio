@@ -1,0 +1,147 @@
+/*
+ * StackSelector.module.css
+ * Segmented button bar matching the existing resume selector aesthetic.
+ * Uses CSS custom properties so it inherits the app theme automatically.
+ */
+
+/* ─── Container ──────────────────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+/* ─── Single segment row ─────────────────────────────────────────────────────── */
+
+.segment {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.segmentLabel {
+  flex-shrink: 0;
+  width: 72px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #6b7280);
+  padding-right: 8px;
+  user-select: none;
+}
+
+.optionGroup {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  background: var(--color-surface-sunken, rgba(0, 0, 0, 0.2));
+}
+
+/* ─── Individual option button ───────────────────────────────────────────────── */
+
+.option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary, #9ca3af);
+  transition: background 0.12s ease, color 0.12s ease;
+  border-right: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  line-height: 1;
+}
+
+.option:last-child {
+  border-right: none;
+}
+
+/* Available + idle */
+.option.available {
+  cursor: pointer;
+}
+
+.option.available:hover {
+  background: var(--color-surface-hover, rgba(255, 255, 255, 0.06));
+  color: var(--color-text-primary, #e5e7eb);
+}
+
+/* Active / selected */
+.option.active {
+  background: var(--color-accent, #3b82f6);
+  color: #fff;
+  font-weight: 600;
+}
+
+.option.active:hover {
+  background: var(--color-accent-hover, #2563eb);
+  color: #fff;
+}
+
+/* Unavailable / coming-soon */
+.option.unavailable {
+  cursor: not-allowed;
+  opacity: 0.45;
+  color: var(--color-text-disabled, #6b7280);
+}
+
+.option.unavailable:hover {
+  background: transparent;
+  color: var(--color-text-disabled, #6b7280);
+}
+
+/* ─── Phase badge ─────────────────────────────────────────────────────────────── */
+
+.phaseBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--color-badge-bg, rgba(255, 255, 255, 0.08));
+  color: var(--color-badge-text, #6b7280);
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+/* ─── Divider between segments ───────────────────────────────────────────────── */
+
+.divider {
+  height: 1px;
+  background: var(--color-border, rgba(255, 255, 255, 0.06));
+  margin: 2px 0;
+}
+
+/* ─── Compact / inline variant ───────────────────────────────────────────────── */
+
+.root.compact .segmentLabel {
+  width: 60px;
+  font-size: 0.6rem;
+}
+
+.root.compact .option {
+  padding: 4px 8px;
+  font-size: 0.68rem;
+}
+
+/* ─── Focus ring (accessibility) ──────────────────────────────────────────────── */
+
+.option:focus-visible {
+  outline: 2px solid var(--color-accent, #3b82f6);
+  outline-offset: -2px;
+  z-index: 1;
+}

@@ -1,12 +1,22 @@
 import type { WorkExperience } from '@devfolio/shared-interfaces';
-import type { Resume } from '../../hooks/useResumeApi';
+import type { Resume } from '../../components/resume/ResumeSelector';
 import { useResumeApi } from '../../hooks/useResumeApi';
 import styles from '../../app/app.module.css';
 
-export function ExperienceTab({ resume }: { resume: Resume }) {
-  const { data, loading, error } = useResumeApi<WorkExperience[]>('/work-experience', resume);
-  if (loading) return <div className={styles.loading}>fetching experience...</div>;
-  if (error) return <div className={styles.error}>Error: {error}</div>;
+interface ExperienceTabProps {
+  resume: Resume;
+  apiBaseUrl: string;
+}
+
+export function ExperienceTab({ apiBaseUrl }: ExperienceTabProps) {
+  const { data, status, error } = useResumeApi<WorkExperience[]>({
+    apiBaseUrl,
+    path: '/work-experience',
+  });
+
+  if (status === 'loading') return <div className={styles.loading}>fetching experience...</div>;
+  if (status === 'error' || status === 'unavailable') return <div className={styles.error}>Error: {error}</div>;
+
   return (
     <div>
       <p className={styles.sectionHeading}>Work Experience</p>
