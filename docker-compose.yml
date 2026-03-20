@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: apps/api-ruby/Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:8000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}

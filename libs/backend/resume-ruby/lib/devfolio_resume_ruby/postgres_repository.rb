@@ -170,10 +170,11 @@ module DevfolioResumeRuby
           featured:     first["featured"],
           start_date:   first["start_date"],
           current:      first["current"],
-          highlights:   proj_rows
+          highlights: proj_rows
             .select { |r| r["highlight"] }
             .sort_by { |r| r["hl_order"].to_i }
-            .map { |r| r["highlight"] },
+            .map { |r| r["highlight"] }
+            .uniq,  # ← add this
           category:     first["category"]
         )
       end
