@@ -8,10 +8,11 @@ interface EducationTabProps {
   apiBaseUrl: string;
 }
 
-export function EducationTab({ apiBaseUrl }: EducationTabProps) {
+export function EducationTab({ resume, apiBaseUrl }: EducationTabProps) {
   const { data, status, error } = useResumeApi<Education[]>({
     apiBaseUrl,
     path: '/education',
+    extraParams: { resume },
   });
 
   if (status === 'loading') return <div className={styles.loading}>fetching education...</div>;

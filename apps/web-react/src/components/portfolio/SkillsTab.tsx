@@ -8,10 +8,11 @@ interface SkillsTabProps {
   apiBaseUrl: string;
 }
 
-export function SkillsTab({ apiBaseUrl }: SkillsTabProps) {
+export function SkillsTab({ resume, apiBaseUrl }: SkillsTabProps) {
   const { data, status, error } = useResumeApi<SkillCategory[]>({
     apiBaseUrl,
     path: '/skills',
+    extraParams: { resume },
   });
 
   if (status === 'loading') return <div className={styles.loading}>fetching skills...</div>;

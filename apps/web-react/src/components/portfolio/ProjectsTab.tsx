@@ -8,10 +8,11 @@ interface ProjectsTabProps {
   apiBaseUrl: string;
 }
 
-export function ProjectsTab({ apiBaseUrl }: ProjectsTabProps) {
+export function ProjectsTab({ resume, apiBaseUrl }: ProjectsTabProps) {
   const { data, status, error } = useResumeApi<Project[]>({
     apiBaseUrl,
     path: '/projects',
+    extraParams: { resume },
   });
 
   if (status === 'loading') return <div className={styles.loading}>fetching projects...</div>;

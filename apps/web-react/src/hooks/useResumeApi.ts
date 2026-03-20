@@ -2,11 +2,8 @@
  * useResumeApi
  *
  * Fetches resume data from the currently selected backend.
- * API base URL is driven by the stack selector state, NOT the VITE_API_BASE
- * env var, so the user can switch backends live without a rebuild.
- *
- * Falls back to VITE_API_BASE only if no selector state is available
- * (e.g. during SSR or testing).
+ * API base URL is driven by the stack selector state.
+ * extraParams are appended as query string params (e.g. ?resume=fullstack).
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -16,15 +13,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 export type ApiStatus = 'idle' | 'loading' | 'success' | 'error' | 'unavailable';
 
 export interface UseResumeApiOptions {
-  /** API base URL injected from useStackSelector state */
   apiBaseUrl: string;
-  /** Endpoint path, e.g. "/resume" */
   path?: string;
-  /** Whether to automatically fetch on mount / when apiBaseUrl changes */
+  /** Extra query params appended to every request, e.g. { resume: 'fullstack' } */
+  extraParams?: Record<string, string>;
   autoFetch?: boolean;
-  /** Max retry attempts on network error (default: 2) */
   maxRetries?: number;
-  /** Delay between retries in ms (default: 1200) */
   retryDelay?: number;
 }
 
@@ -32,25 +26,23 @@ export interface UseResumeApiReturn<T> {
   data: T | null;
   status: ApiStatus;
   error: string | null;
-  /** Retry / initial fetch */
   refetch: () => void;
-  /** How many retries have been attempted */
   retryCount: number;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const DEFAULT_PATH = '/resume';
+const DEFAULT_PATH = '/profile';
 const DEFAULT_MAX_RETRIES = 2;
 const DEFAULT_RETRY_DELAY = 1200;
-// Timeout before we consider the API unavailable
 const REQUEST_TIMEOUT_MS = 8000;
 
-// ─── Hook ────────────────────────────────────────────────────────────────────
+// ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useResumeApi<T = unknown>({
   apiBaseUrl,
   path = DEFAULT_PATH,
+  extraParams,
   autoFetch = true,
   maxRetries = DEFAULT_MAX_RETRIES,
   retryDelay = DEFAULT_RETRY_DELAY,
@@ -60,18 +52,27 @@ export function useResumeApi<T = unknown>({
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 
-  // Track whether a fetch is in-flight so we can abort on unmount / re-trigger
   const abortRef = useRef<AbortController | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Serialize extraParams to a stable string so object identity doesn't
+  // cause infinite re-renders via useCallback / useEffect dependency chains.
+  const extraParamsKey = extraParams
+    ? new URLSearchParams(extraParams).toString()
+    : '';
+
+  const buildUrl = useCallback(() => {
+    const base = `${apiBaseUrl}${path}`;
+    if (!extraParamsKey) return base;
+    return `${base}?${extraParamsKey}`;
+  }, [apiBaseUrl, path, extraParamsKey]);
+
   const fetchData = useCallback(
     async (attempt = 0) => {
-      // Cancel any in-flight request
       if (abortRef.current) abortRef.current.abort();
       const controller = new AbortController();
       abortRef.current = controller;
 
-      // Timeout signal
       const timeoutId = setTimeout(
         () => controller.abort('timeout'),
         REQUEST_TIMEOUT_MS
@@ -81,8 +82,7 @@ export function useResumeApi<T = unknown>({
       setError(null);
 
       try {
-        const url = `${apiBaseUrl}${path}`;
-        const res = await fetch(url, {
+        const res = await fetch(buildUrl(), {
           signal: controller.signal,
           headers: { Accept: 'application/json' },
         });
@@ -93,25 +93,27 @@ export function useResumeApi<T = unknown>({
           throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         }
 
-        const json: T = await res.json();
-        setData(json);
+        const json = await res.json();
+        // Unwrap FastAPI's { data: ..., version: '1.0' } envelope if present
+        const unwrapped = (json && typeof json === 'object' && 'data' in json)
+          ? (json as { data: T }).data
+          : json as T;
+        setData(unwrapped);
         setStatus('success');
         setRetryCount(0);
       } catch (err) {
         clearTimeout(timeoutId);
 
-        // Ignore abort errors from our own cleanup
-        if ((err as Error).name === 'AbortError' && controller.signal.reason !== 'timeout') {
+        if ((err as Error).name === 'AbortError' && (err as Error).message !== 'timeout') {
           return;
         }
 
-        const isTimeout = (err as Error).name === 'AbortError';
+        const isTimeout = (err as Error).message === 'timeout';
         const isNetworkError =
           isTimeout ||
           (err instanceof TypeError && err.message.includes('fetch'));
 
         if (isNetworkError && attempt < maxRetries) {
-          // Retry with backoff
           setRetryCount(attempt + 1);
           retryTimerRef.current = setTimeout(
             () => fetchData(attempt + 1),
@@ -131,11 +133,9 @@ export function useResumeApi<T = unknown>({
         setRetryCount(attempt);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [apiBaseUrl, path, maxRetries, retryDelay]
+    [buildUrl, maxRetries, retryDelay]
   );
 
-  // Reset + re-fetch whenever the API base URL changes (backend switched)
   useEffect(() => {
     setData(null);
     setStatus('idle');

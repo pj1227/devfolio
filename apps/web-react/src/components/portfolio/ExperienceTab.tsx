@@ -8,10 +8,11 @@ interface ExperienceTabProps {
   apiBaseUrl: string;
 }
 
-export function ExperienceTab({ apiBaseUrl }: ExperienceTabProps) {
+export function ExperienceTab({ resume, apiBaseUrl }: ExperienceTabProps) {
   const { data, status, error } = useResumeApi<WorkExperience[]>({
     apiBaseUrl,
     path: '/work-experience',
+    extraParams: { resume },
   });
 
   if (status === 'loading') return <div className={styles.loading}>fetching experience...</div>;

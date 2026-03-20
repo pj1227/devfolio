@@ -10,6 +10,18 @@ export default defineConfig(() => ({
   server: {
     port: 4200,
     host: 'localhost',
+    proxy: {
+      '/proxy/fastapi': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/proxy\/fastapi/, ''),
+      },
+      '/proxy/rails': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/proxy\/rails/, ''),
+      },
+    },
   },
   preview: {
     port: 4200,

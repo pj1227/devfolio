@@ -1,102 +1,82 @@
-/**
- * app.tsx — DevFolio main shell
- *
- * Phase 2 / Chunk 2e: Stack Selector UI
- *
- * Wires:
- *   useStackSelector  → manages selection + URL params
- *   useResumeApi      → fetches data from the selected backend
- *   StackSelector     → four-segment UI bar
- *   Header            → shows active frontend + backend
- *   ApiStatusBanner   → loading / error / unavailable states
- */
-
+import { useState } from 'react';
+import type { Profile } from '@devfolio/shared-interfaces';
 import { useStackSelector } from '@devfolio/shared-hooks';
 import { StackSelector } from '@devfolio/shared-ui';
 import { BACKEND_OPTIONS } from '@devfolio/shared-models';
 import { useResumeApi } from '../hooks/useResumeApi';
+import type { Resume } from '../components/resume/ResumeSelector';
 import { Header } from '../components/layout/Header';
-import { ApiStatusBanner } from '../components/layout/ApiStatusBanner';
+import { Hero } from '../components/layout/Hero';
+import { ResumeSelector } from '../components/resume/ResumeSelector';
+import { ExperienceTab } from '../components/portfolio/ExperienceTab';
+import { EducationTab } from '../components/portfolio/EducationTab';
+import { SkillsTab } from '../components/portfolio/SkillsTab';
+import { ProjectsTab } from '../components/portfolio/ProjectsTab';
+import { TechStackTab } from './stack/TechStackTab';
 import styles from './app.module.css';
 
-// ─── App ──────────────────────────────────────────────────────────────────────
+type Tab = 'experience' | 'education' | 'skills' | 'projects' | 'tech-stack';
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'experience', label: '01_experience' },
+  { id: 'education',  label: '02_education' },
+  { id: 'skills',     label: '03_skills' },
+  { id: 'projects',   label: '04_projects' },
+  { id: 'tech-stack', label: '05_tech_stack' },
+];
 
 export function App() {
+  const [activeTab, setActiveTab] = useState<Tab>('experience');
+  const [resume, setResume]       = useState<Resume>('fullstack');
+
   const { state, setSegment, segments } = useStackSelector();
   const { selection, apiBaseUrl } = state;
 
-  const { data, status, error, refetch, retryCount } = useResumeApi({
+  const { data: profile } = useResumeApi<Profile>({
     apiBaseUrl,
-    path: '/resume',
-    autoFetch: true,
-    maxRetries: 2,
-    retryDelay: 1200,
+    path: '/profile',
+    extraParams: { resume },
   });
 
-  const backendLabel =
-    BACKEND_OPTIONS.find((o) => o.key === selection.backend)?.label ??
-    selection.backend;
+  const renderTab = () => {
+    switch (activeTab) {
+      case 'experience': return <ExperienceTab resume={resume} apiBaseUrl={apiBaseUrl} />;
+      case 'education':  return <EducationTab  resume={resume} apiBaseUrl={apiBaseUrl} />;
+      case 'skills':     return <SkillsTab     resume={resume} apiBaseUrl={apiBaseUrl} />;
+      case 'projects':   return <ProjectsTab   resume={resume} apiBaseUrl={apiBaseUrl} />;
+      case 'tech-stack': return <TechStackTab  apiBaseUrl={apiBaseUrl} />;
+    }
+  };
 
   return (
-    <div className={styles.appRoot}>
-      {/* ── Header ── */}
+    <div className={styles.app}>
       <Header selection={selection} />
+      {profile && <Hero profile={profile} />}
 
-      <main className={styles.main}>
-        {/* ── Stack selector panel ── */}
-        <section className={styles.selectorPanel} aria-label="Stack selector">
-          <h2 className={styles.selectorHeading}>
-            Choose your stack
-          </h2>
-          <p className={styles.selectorSubtext}>
-            Available options are live. Muted options launch in a future phase.
-          </p>
-          <StackSelector
-            segments={segments}
-            selection={selection}
-            onSelect={setSegment}
-          />
-        </section>
+      <StackSelector
+        segments={segments}
+        selection={selection}
+        onSelect={setSegment}
+      />
 
-        {/* ── Resume output ── */}
-        <section className={styles.resumePanel} aria-label="Resume output">
-          <>
-            <ApiStatusBanner
-              status={status}
-              error={error}
-              retryCount={retryCount}
-              maxRetries={2}
-              onRetry={refetch}
-              backendLabel={backendLabel}
-            />
-            {status === 'success' && data && (
-              <ResumeOutput data={data} />
-            )}
-          </>
-        </section>
+      <ResumeSelector resume={resume} onChange={setResume} />
+
+      <nav className={styles.tabBar}>
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            className={`${styles.tab} ${activeTab === t.id ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </nav>
+
+      <main className={styles.content}>
+        {renderTab()}
       </main>
     </div>
-  );
-}
-
-// ─── Temporary raw output (replace with proper resume component in next chunk) ─
-
-function ResumeOutput({ data }: { data: unknown }) {
-  return (
-    <pre
-      style={{
-        fontSize: '0.7rem',
-        overflowX: 'auto',
-        padding: '16px',
-        borderRadius: '6px',
-        background: 'rgba(0,0,0,0.3)',
-        color: 'var(--color-text-secondary, #9ca3af)',
-        whiteSpace: 'pre-wrap',
-        wordBreak: 'break-word',
-      }}
-    >
-      {JSON.stringify(data, null, 2)}
-    </pre>
   );
 }
 

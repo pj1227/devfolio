@@ -67,7 +67,7 @@ export const BACKEND_OPTIONS: StackOption<BackendKey>[] = [
     label: 'FastAPI + Python',
     shortLabel: 'FastAPI',
     status: 'available',
-    apiBaseUrl: 'https://api.joelcossins.dev',
+    apiBaseUrl: '/proxy/fastapi',
     icon: 'fastapi',
   },
   {
@@ -75,7 +75,7 @@ export const BACKEND_OPTIONS: StackOption<BackendKey>[] = [
     label: 'Rails + Ruby',
     shortLabel: 'Rails',
     status: 'available',
-    apiBaseUrl: 'https://api-rails.joelcossins.dev',
+    apiBaseUrl: '/proxy/rails',
     icon: 'rails',
   },
   {
@@ -220,7 +220,7 @@ export function getApiBaseUrl(backendKey: BackendKey): string {
   const opt = getBackendOption(backendKey);
   if (!opt || opt.status !== 'available' || !opt.apiBaseUrl) {
     // Fallback to FastAPI — should never happen in practice
-    return 'https://api.joelcossins.dev';
+    return '/proxy/fastapi';
   }
   return opt.apiBaseUrl;
 }
