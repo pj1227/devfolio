@@ -149,6 +149,13 @@
   color: var(--accent-cyan);
 }
 
+/* ── Stack Selector ── */
+.stackSelectorWrap {
+  padding: 0.75rem 2.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
 /* ── Tabs ── */
 .tabBar {
   display: flex;

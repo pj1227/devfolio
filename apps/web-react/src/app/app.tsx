@@ -53,11 +53,13 @@ export function App() {
       <Header selection={selection} />
       {profile && <Hero profile={profile} />}
 
-      <StackSelector
-        segments={segments}
-        selection={selection}
-        onSelect={setSegment}
-      />
+      <div className={styles.stackSelectorWrap}>
+        <StackSelector
+          segments={segments}
+          selection={selection}
+          onSelect={setSegment}
+        />
+      </div>
 
       <ResumeSelector resume={resume} onChange={setResume} />
 

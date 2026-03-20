@@ -1,31 +1,24 @@
 /**
  * Header
  *
- * Site header with nav and active stack indicator.
- * Receives the current stack selection as a prop so it stays purely
- * presentational — all state lives in useStackSelector.
+ * Reuses app.module.css styles to match the existing design language.
+ * Purely presentational — all state lives in useStackSelector.
  */
 
 import type { StackSelection } from '@devfolio/shared-interfaces';
 import { BACKEND_OPTIONS, FRONTEND_OPTIONS } from '@devfolio/shared-models';
-import styles from './Header.module.css';
-
-// ─── Props ────────────────────────────────────────────────────────────────────
+import styles from '../../app/app.module.css';
 
 export interface HeaderProps {
   selection: StackSelection;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function getLabel<K extends string>(
-  options: { key: K; label: string; shortLabel?: string }[],
+  options: { key: K; label: string }[],
   key: K
 ): string {
   return options.find((o) => o.key === key)?.label ?? key;
 }
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export function Header({ selection }: HeaderProps) {
   const frontendLabel = getLabel(FRONTEND_OPTIONS, selection.frontend);
@@ -33,39 +26,36 @@ export function Header({ selection }: HeaderProps) {
 
   return (
     <header className={styles.header}>
-      <div className={styles.inner}>
-        {/* Brand */}
-        <a href="/" className={styles.brand} aria-label="DevFolio home">
-          <span className={styles.brandName}>DevFolio</span>
-        </a>
-
-        {/* Active stack pill */}
-        <div className={styles.stackPill} aria-label="Currently active stack">
-          <span className={styles.stackPillSegment}>{frontendLabel}</span>
-          <span className={styles.stackPillDivider} aria-hidden="true">+</span>
-          <span className={styles.stackPillSegment}>{backendLabel}</span>
-        </div>
-
-        {/* Nav */}
-        <nav className={styles.nav} aria-label="Primary navigation">
-          <a
-            href="https://github.com/pj1227/devfolio"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.navLink}
-          >
-            GitHub
-          </a>
-          <a
-            href="https://api.joelcossins.dev/docs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.navLink}
-          >
-            API Docs
-          </a>
-        </nav>
+      <div className={styles.logoMark}>
+        <span className={styles.logoText}>
+          // <span>joel</span>cossins.dev
+        </span>
+        <span className={styles.logoCursor} aria-hidden="true" />
       </div>
+
+      <div className={styles.stackBadge} aria-label="Currently active stack">
+        <span className={styles.stackDot} aria-hidden="true" />
+        {frontendLabel} + {backendLabel}
+      </div>
+
+      <nav style={{ display: 'flex', gap: '0.5rem' }}>
+        <a
+          href="https://github.com/pj1227/devfolio"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.heroLink}
+        >
+          ↗ GitHub
+        </a>
+        <a
+          href="https://api.joelcossins.dev/docs"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.heroLink}
+        >
+          ↗ API Docs
+        </a>
+      </nav>
     </header>
   );
 }
